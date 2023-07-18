@@ -9,7 +9,7 @@
 
 #define MAX_SHADES 8
 
-char shades[MAX_SHADES] = { '@','#','%','*','|','-','.',' ' };
+unsigned char shades[MAX_SHADES] = { '@','#','%','*','|','-','.',' ' };
 
 #define SAFE_FREE(p)  { if(p) { free(p); (p)=NULL; } }
 
@@ -34,14 +34,14 @@ int main(int argc, char** argv)
 	int original_width = image_data.getWidth();
 	int original_height = image_data.getHeight();
 	unsigned char r, g, b;
-	unsigned char* original_image = (unsigned char*)malloc((original_width*original_height)*sizeof(256));
+	unsigned char* original_image = (unsigned char*)malloc((original_width * original_height) * sizeof(256));
 	
-	for (int y=0; y<original_height; y++) 
+	for (int y = 0; y < original_height; y++) 
 	{
-		for (int x=0; x<original_width; x++) 
+		for (int x = 0; x < original_width; x++) 
 		{
 			image_data.getColor(x, y, r, g, b);
-			original_image[x+y*original_width] = (unsigned char)(0.299*r+0.587*g+0.114*b);
+			original_image[x + y * original_width] = (unsigned char)(0.299 * r + 0.587 * g + 0.114 * b);
 		}
 	}
 
@@ -60,21 +60,21 @@ int main(int argc, char** argv)
 	int block_h = (int)ceil(original_height/(double)limit_h);
 	int resized_width = original_width / block_w;
 	int resized_height = original_height / block_h;
-	unsigned char* resized_image = (unsigned char*)malloc((resized_width*resized_height)*sizeof(256));
+	unsigned char* resized_image = (unsigned char*)malloc((resized_width * resized_height) * sizeof(256));
 	
-	for (int y=0; y<resized_height; y++) 
+	for (int y = 0; y < resized_height; y++) 
 	{
-		for (int x=0; x<resized_width; x++) 
+		for (int x = 0; x < resized_width; x++) 
 		{
 			int value_sum = 0;
-			for (int j=0; j<block_h; j++) 
+			for (int j = 0; j < block_h; j++) 
 			{
-				for (int i=0; i<block_w; i++) 
+				for (int i = 0; i < block_w; i++) 
 				{
-					value_sum += original_image[i + (j*original_width) + (x*block_w) + (y*block_h*original_width)];
+					value_sum += original_image[i + (j * original_width) + (x * block_w) + (y * block_h * original_width)];
 				}
 			}
-			resized_image[x+y*resized_width] = value_sum / (block_h*block_w);
+			resized_image[x + y * resized_width] = value_sum / (block_h * block_w);
 		}
 	}
 
@@ -97,17 +97,17 @@ int main(int argc, char** argv)
 	if (argc > 4)
 	{
 		FILE* foutput = fopen(argv[4], "w");
-		for (int y=0; y<resized_height; y++) 
+		for (int y = 0; y < resized_height; y++) 
 		{
-			for (int x=0; x<resized_width; x++) 
+			for (int x = 0; x < resized_width; x++) 
 			{
 				if (argv[1][0] == 'p') 
 				{
-					fputc(shades[resized_image[x+y*resized_width]], foutput);
+					fputc(shades[resized_image[x + y * resized_width]], foutput);
 				}
 				else if (argv[1][0] == 's') 
 				{
-					fputc(shades[7-resized_image[x+y*resized_width]], foutput);
+					fputc(shades[7 - resized_image[x + y * resized_width]], foutput);
 				}
 			}
 			fputc('\n', foutput);
@@ -116,17 +116,17 @@ int main(int argc, char** argv)
 		free(foutput);
 	}
 	else {
-		for (int y=0; y<resized_height; y++) 
+		for (int y = 0; y < resized_height; y++) 
 		{
-			for (int x=0; x<resized_width; x++) 
+			for (int x = 0; x < resized_width; x++) 
 			{
 				if (argv[1][0] == 'p')
 				{
-					printf("%c", shades[resized_image[x+y*resized_width]]);
+					printf("%c", shades[resized_image[x + y * resized_width]]);
 				}
 				else if (argv[1][0] == 's')
 				{
-					printf("%c", shades[7-resized_image[x+y*resized_width]]);
+					printf("%c", shades[7 - resized_image[x + y * resized_width]]);
 				}
 			}
 			printf("\n");
